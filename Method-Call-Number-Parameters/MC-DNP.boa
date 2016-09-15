@@ -1,0 +1,70 @@
+ChangedMethodCallParameters: output sum of int;
+p: Project = input;
+
+isfixing := false;
+countMethodCalls := 0;
+countMethodParams := 0;
+# map of file names to the last revision of that file
+files: map[string] of ChangedFile;
+
+visit(p, visitor {
+    
+    before n: Project -> {
+        ifall (i: int; !match(`^java$`, lowercase(n.programming_languages[i]))) stop;
+    }
+    
+    before node: CodeRepository -> {
+        if (node.kind != RepositoryKind.GIT) stop;
+    }
+    
+	before node: Revision -> isfixing = isfixingrevision(node.log);
+	before node: ChangedFile -> {
+		# if this is a fixing revision and
+		# there was a previous version of the file
+		if (isfixing && haskey(files, node.name)) {
+		    # count how many method calls and method parameters
+		    # were previously in the file
+			countMethodCalls = 0;
+			countMethodParams = 0;
+			visit(getast(files[node.name]));
+			lastCountMethodCalls := countMethodCalls;
+            lastCountMethodParams := countMethodParams;
+
+			# count how many method calls and method parameters
+			# are currently in the file
+			countMethodCalls = 0;
+			countMethodParams = 0;
+			visit(getast(node));
+
+            # if changed parameters of these method calls, output
+            if (countMethodCalls == lastCountMethodCalls) {
+                if (countMethodParams != lastCountMethodParams) {
+                    ChangedMethodCallParameters << 1;
+                }
+            }
+		}
+		if (node.change == ChangeKind.DELETED)
+			remove(files, node.name);
+		else
+			files[node.name] = node;
+		stop;
+	}
+	
+	before node: Statement -> {
+            if (node.kind == StatementKind.BLOCK) {
+                    foreach (i: int; def(node.statements[i])) {
+                        visit(node.statements[i], visitor {
+                            before node: Statement -> {
+                                if (node.kind == StatementKind.BLOCK) stop;
+                            }
+                            before node: Expression -> {
+                                if(node.kind == ExpressionKind.METHODCALL) {
+                                    countMethodCalls++;
+                                    countMethodParams = countMethodParams + len(node.method_args); 
+                                }
+                            }
+                    });
+                }
+            }
+    }
+});
