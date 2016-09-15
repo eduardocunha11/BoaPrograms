@@ -1,0 +1,114 @@
+ChangedIfConditional: output sum of int;
+p: Project = input;
+
+isfixing := false;
+countIF := 0;
+countEXP := 0;
+
+# map of file names to the last revision of that file
+files: map[string] of ChangedFile;
+
+visit(p, visitor {
+    
+    before n: Project -> {
+        ifall (i: int; !match(`^java$`, lowercase(n.programming_languages[i]))) stop;
+    }
+    
+    before node: CodeRepository -> {
+        if (node.kind != RepositoryKind.GIT) stop;
+    }
+    
+	before node: Revision -> isfixing = isfixingrevision(node.log);
+	before node: ChangedFile -> {
+		# if this is a fixing revision and
+		# there was a previous version of the file
+		if (isfixing && haskey(files, node.name)) {
+			# count how many IF conditions and expressions of these IF conditionals
+			# were previously in the file
+			countIF = 0;
+			countEXP = 0;
+			visit(getast(files[node.name]));
+			lastCountIF := countIF;
+			lastCountEXP := countEXP;
+
+			# count how many IF conditions and expressions of these IF conditionals
+			# are currently in the file
+			countIF = 0;
+			countEXP = 0;
+			visit(getast(node));
+
+			# if the number of IF conditions is the same
+			# check the number of expressions in these two versions of the file
+			if (countIF == lastCountIF) {
+			    if (countEXP != lastCountEXP) {
+			        ChangedIfConditional << 1;
+			    }
+			}
+		}
+		if (node.change == ChangeKind.DELETED)
+			remove(files, node.name);
+		else
+			files[node.name] = node;
+		stop;
+	}
+	before node: Statement ->
+		# increase the counter if there is an IF statement
+		if (node.kind == StatementKind.IF) {
+		    countIF++;
+		    
+			visit(node.expression, visitor {
+				before node: Expression ->
+					if (node.kind == ExpressionKind.ARRAYINDEX ||
+					    node.kind == ExpressionKind.ARRAYINIT ||
+					    node.kind == ExpressionKind.ASSIGN ||
+					    node.kind == ExpressionKind.ASSIGN_ADD ||
+					    node.kind == ExpressionKind.ASSIGN_BITAND ||
+					    node.kind == ExpressionKind.ASSIGN_BITOR ||
+					    node.kind == ExpressionKind.ASSIGN_BITXOR ||
+					    node.kind == ExpressionKind.ASSIGN_DIV ||
+					    node.kind == ExpressionKind.ASSIGN_LSHIFT ||
+					    node.kind == ExpressionKind.ASSIGN_MOD ||
+					    node.kind == ExpressionKind.ASSIGN_MULT ||
+					    node.kind == ExpressionKind.ASSIGN_RSHIFT ||
+					    node.kind == ExpressionKind.ASSIGN_SUB ||
+					    node.kind == ExpressionKind.ASSIGN_UNSIGNEDRSHIFT ||
+					    node.kind == ExpressionKind.BIT_AND ||
+					    node.kind == ExpressionKind.BIT_LSHIFT ||
+					    node.kind == ExpressionKind.BIT_NOT ||
+					    node.kind == ExpressionKind.BIT_OR ||
+					    node.kind == ExpressionKind.BIT_RSHIFT ||
+					    node.kind == ExpressionKind.BIT_UNSIGNEDRSHIFT ||
+					    node.kind == ExpressionKind.BIT_XOR ||
+					    node.kind == ExpressionKind.CAST ||
+					    node.kind == ExpressionKind.CONDITIONAL ||
+					    node.kind == ExpressionKind.EQ ||
+					    node.kind == ExpressionKind.GT ||
+					    node.kind == ExpressionKind.GTEQ ||
+					    node.kind == ExpressionKind.LITERAL ||
+					    node.kind == ExpressionKind.LOGICAL_AND ||
+					    node.kind == ExpressionKind.LOGICAL_NOT ||
+					    node.kind == ExpressionKind.LOGICAL_OR ||
+					    node.kind == ExpressionKind.LT ||
+					    node.kind == ExpressionKind.LTEQ ||
+					    node.kind == ExpressionKind.METHODCALL ||
+					    node.kind == ExpressionKind.NEQ || 
+					    node.kind == ExpressionKind.NEW ||
+					    node.kind == ExpressionKind.NEWARRAY ||
+					    node.kind == ExpressionKind.NULLCOALESCE ||
+					    node.kind == ExpressionKind.OP_ADD ||
+					    node.kind == ExpressionKind.OP_DEC ||
+					    node.kind == ExpressionKind.OP_DIV ||
+					    node.kind == ExpressionKind.OP_INC ||
+					    node.kind == ExpressionKind.OP_MOD ||
+					    node.kind == ExpressionKind.OP_MULT ||
+					    node.kind == ExpressionKind.OP_SUB ||
+					    node.kind == ExpressionKind.OTHER ||
+					    node.kind == ExpressionKind.TYPECOMPARE ||
+					    node.kind == ExpressionKind.VARACCESS ||
+					    node.kind == ExpressionKind.VARDECL) {
+					    
+                        countEXP++;
+					}
+			});
+		}
+});
