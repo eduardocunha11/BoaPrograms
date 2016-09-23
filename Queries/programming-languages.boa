@@ -1,0 +1,25 @@
+# Counts how many Java GitHub projects with bug fixing commits have 4 programming languages
+p: Project = input;
+counts: output sum of int;
+
+foundFix := false;
+
+visit(p, visitor {
+    before n: Project -> ifall (i: int; !match(`^java$`, lowercase(n.programming_languages[i]))) stop;
+    before node: CodeRepository -> {
+	    if (node.kind == RepositoryKind.GIT) {
+	        foundFix = false;
+	        exists (j: int; isfixingrevision(node.revisions[j].log) == true) {
+	            foundFix = true;
+	            stop;
+	        }
+	    }
+	}
+
+	after node: Project -> {
+	    if (foundFix) {
+	        if (len(p.programming_languages) == 4)
+	           counts << 1;
+	    }
+	}
+});
