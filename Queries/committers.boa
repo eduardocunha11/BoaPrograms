@@ -1,0 +1,35 @@
+# Counts how many Java GitHub projects with bug fixing commit(s) have x committers (in this query, x = 3 committers)
+p: Project = input;
+counts: output sum of int;
+
+foundFix := false;
+committers: map[string] of bool;
+
+visit(p, visitor {
+    before n: Project -> ifall (i: int; !match(`^java$`, lowercase(n.programming_languages[i]))) stop;
+    
+    before node: CodeRepository -> {
+	    if (node.kind == RepositoryKind.GIT) {
+	        foundFix = false;
+	        exists (j: int; isfixingrevision(node.revisions[j].log) == true) {
+	            foundFix = true;
+	            break;
+	        }
+	    }
+    }
+    
+    before node: Revision -> {
+        
+        if (foundFix) {
+		    if (!haskey(committers, node.committer.username)) {
+			    committers[node.committer.username] = true;
+		    }
+        }
+    }
+        
+    after node: Project -> {
+	    if (foundFix && len(committers) == 3) {
+	        counts << 1;
+	    }
+	}
+});
