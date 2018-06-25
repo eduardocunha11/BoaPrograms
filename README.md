@@ -24,3 +24,19 @@ Please feel free to contact us, if you have any questions.
 
 [1] K. Pan, S. Kim, and E. J. Whitehead Jr. <b>Toward an understanding of bug fix patterns</b>. 
 <i>Empirical Software Engineering</i>, 14(3):286–315, 2009.
+
+# Target Publication
+
+[2] CAMPOS, E.,  MAIA, M.; <b>Common Bug-fix Patterns: A Large-Scale Observational Study</b>.<i>Proc. of the 11th ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)</i>. pages. 404-413, 2017.
+
+# To cite this version (BibTex entry)
+
+@INPROCEEDINGS{Campos:8170127, 
+author={E. C. Campos and M. d. A. Maia}, 
+booktitle={{2017 ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)}}, 
+title={{Common Bug-Fix Patterns: A Large-Scale Observational Study}}, 
+year={2017}, 
+pages={404-413}, 
+doi={10.1109/ESEM.2017.55}, 
+month={Nov}
+}
