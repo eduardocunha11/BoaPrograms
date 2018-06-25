@@ -1,6 +1,6 @@
 # Boa Programs for Detection of Bug Fix Patterns 
 
-Pan et al. [1] identified 27 bug fix patterns through manual inspection of the bug fix change history of seven open-source Java projects. They found that the most common categories of bug fix patterns are: Method Call and IF-related. 
+Pan <i>et al.</i> [1] identified 27 bug fix patterns through manual inspection of the bug fix change history of seven open-source Java projects. They found that the most common categories of bug fix patterns are: Method Call and IF-related. 
 
 We released our Boa programs designed to detect common bug fix patterns in the history information of the project.
 We created Boa programs for the five bug fix patterns listed below (for more information, please refer to Pan et al. work [1]):
@@ -27,10 +27,11 @@ Please feel free to contact us, if you have any questions.
 
 # Target Publication
 
-[2] CAMPOS, E.,  MAIA, M.; <b>Common Bug-fix Patterns: A Large-Scale Observational Study</b>.<i>Proc. of the 11th ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)</i>. pages. 404-413, 2017.
+[2] CAMPOS, E.,  MAIA, M.; <b>Common Bug-fix Patterns: A Large-Scale Observational Study</b>.<i>Proc. of the 11th ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)</i>. pages. 404-413, 2017. [[paper] http://lascam.facom.ufu.br/cms/userfiles/downloads/2017/ESEM_2017_paper.pdf), [website (http://www.scs.ryerson.ca/eseiw2017/ESEM/accepted.html)]
 
 # To cite this version (BibTex entry)
 
+```
 @INPROCEEDINGS{Campos:8170127, 
 author={E. C. Campos and M. d. A. Maia}, 
 booktitle={{2017 ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)}}, 
@@ -40,3 +41,4 @@ pages={404-413},
 doi={10.1109/ESEM.2017.55}, 
 month={Nov}
 }
+```
