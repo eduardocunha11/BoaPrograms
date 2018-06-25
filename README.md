@@ -28,8 +28,8 @@ Please feel free to contact us, if you have any questions.
 # Target Publication
 
 [2] CAMPOS, E.,  MAIA, M.; <b>Common Bug-fix Patterns: A Large-Scale Observational Study</b>.<i>Proc. of the 11th ACM/IEEE International Symposium on Empirical Software Engineering and Measurement (ESEM)</i>. pages. 404-413, 2017. 
-[[paper] http://lascam.facom.ufu.br/cms/userfiles/downloads/2017/ESEM_2017_paper.pdf), 
-[website http://www.scs.ryerson.ca/eseiw2017/ESEM/index.html]]
+[[paper] http://lascam.facom.ufu.br/cms/userfiles/downloads/2017/ESEM_2017_paper.pdf), <br>
+[[site] http://lascam.facom.ufu.br/cms/?Publications]
 
 # To cite this version (BibTex entry)
 
